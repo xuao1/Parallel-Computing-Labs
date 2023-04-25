@@ -22,5 +22,5 @@ int main()
 	pi = sum * step;
 	end_time = omp_get_wtime();
 	printf("Time: %f seconds\n", end_time - start_time);
-	printf("%.20Lf\n", pi);
+	printf("%.10Lf\n", pi);
 }	//共2个线程参加计算，其中线程0进行迭代步0~49999，线程1进行迭代步50000~99999.

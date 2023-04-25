@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <time.h>
 
-long num_steps = 1000000000;//越大值越精确
+static long num_steps = 1000000000;//越大值越精确
 long double step;
 
 int main() {
@@ -22,6 +22,6 @@ int main() {
 	double duration = (double)(end - start) / CLOCKS_PER_SEC;
 	printf("Time: %lf seconds\n", duration);
 
-	printf("%.20Lf\n", pi);
+	printf("%.10Lf\n", pi);
 	return 0;
 }

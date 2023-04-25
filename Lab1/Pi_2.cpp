@@ -30,6 +30,6 @@ int main()
 	for (i = 0, pi = 0.0; i < NUM_THREADS; i++)  pi += sum[i] * step;
 	end_time = omp_get_wtime();
 	printf("Time: %f seconds\n", end_time - start_time);
-	printf("%.20Lf\n", pi);
+	printf("%.10Lf\n", pi);
 	return 0;
 }

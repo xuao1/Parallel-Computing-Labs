@@ -30,6 +30,6 @@ int main()
 	end_time = omp_get_wtime();
 	printf("Time: %f seconds\n", end_time - start_time);
 
-	printf("%.20Lf\n", pi);
+	printf("%.10Lf\n", pi);
 	return 0;
 }//共2个线程参加计算，其中线程0进行迭代步0,2,4,...线程1进行迭代步1,3,5,....

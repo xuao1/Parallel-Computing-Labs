@@ -29,5 +29,5 @@ int main()
 	}
 	end_time = omp_get_wtime();
 	printf("Time: %f seconds\n", end_time - start_time);
-	printf("%.20Lf\n", pi);
+	printf("%.10Lf\n", pi);
 }	//共2个线程参加计算，其中线程0进行迭代步0,2,4,...线程1进行迭代步1,3,5,....当被指定为critical的代码段	正在被0线程执行时，1线程的执行也到达该代码段，则它将被阻塞知道0线程退出临界区。
