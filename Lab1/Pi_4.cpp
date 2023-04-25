@@ -22,6 +22,6 @@ int main()
 	pi = sum * step;
 	clock_t end = clock();
 	double duration = (double)(end - start) / CLOCKS_PER_SEC;
-	printf("Time：%lf s\n", duration);
+	printf("Time: %lf s\n", duration);
 	printf("%.20Lf\n", pi);
 }	//共2个线程参加计算，其中线程0进行迭代步0~49999，线程1进行迭代步50000~99999.

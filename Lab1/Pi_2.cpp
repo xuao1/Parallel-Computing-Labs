@@ -30,7 +30,7 @@ int main()
 	for (i = 0, pi = 0.0; i < NUM_THREADS; i++)  pi += sum[i] * step;
 	clock_t end = clock();
 	double duration = (double)(end - start) / CLOCKS_PER_SEC;
-	printf("Time£º%lf s\n", duration);
+	printf("Time: %lf s\n", duration);
 	printf("%.20Lf\n", pi);
 	return 0;
 }

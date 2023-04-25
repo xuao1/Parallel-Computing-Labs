@@ -20,7 +20,7 @@ int main() {
 
 	clock_t end = clock();
 	double duration = (double)(end - start) / CLOCKS_PER_SEC;
-	printf("Time£º%lf s\n", duration);
+	printf("Time: %lf s\n", duration);
 
 	printf("%.20Lf\n", pi);
 	return 0;
