@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <omp.h>
-#include <time.h>
 static long num_steps = 1000000000;
 long double step;
 #define NUM_THREADS 2
@@ -10,7 +9,8 @@ int main()
 	int i;
 	long double x, pi, sum[NUM_THREADS];
 	// scanf("%ld", &num_steps);
-	clock_t start = clock();
+	double start_time, end_time;
+	start_time = omp_get_wtime();
 	step = 1.0 / (long double)num_steps;
 	omp_set_num_threads(NUM_THREADS);  //…Ë÷√2œﬂ≥Ã
 
@@ -28,9 +28,8 @@ int main()
 	}
 
 	for (i = 0, pi = 0.0; i < NUM_THREADS; i++)  pi += sum[i] * step;
-	clock_t end = clock();
-	double duration = (double)(end - start) / CLOCKS_PER_SEC;
-	printf("Time: %lf s\n", duration);
+	end_time = omp_get_wtime();
+	printf("Time: %f seconds\n", end_time - start_time);
 	printf("%.20Lf\n", pi);
 	return 0;
 }
