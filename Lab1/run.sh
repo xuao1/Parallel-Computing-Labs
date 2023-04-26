@@ -29,4 +29,9 @@ echo -e "${GREEN}Running Pi_4${RESET}"
 echo -e "${YELLOW}Pi_4 output:${RESET}"
 cat Pi_4.out
 
-rm Pi_0.out Pi_1.out Pi_2.out Pi_3.out Pi_4.out
+echo -e "${GREEN}Running PSRS${RESET}"
+./PSRS > PSRS.out
+echo -e "${YELLOW}PSRS output:${RESET}"
+cat PSRS.out
+
+rm Pi_0.out Pi_1.out Pi_2.out Pi_3.out Pi_4.out PSRS.out
