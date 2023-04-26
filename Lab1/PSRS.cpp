@@ -104,5 +104,6 @@ int main()
 	printf("after sorting: \n");
 	for (int i = 0; i < N; i++)
 		printf("%d ", A[i]);
+	printf("\n");
 	return 0;
 }
