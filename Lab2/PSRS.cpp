@@ -136,6 +136,17 @@ int main(int argc, char* argv[])
         }
         printf("\n");
     }
+    free(samples);
+    free(global_samples);
+    free(pivots);
+    free(send_buf);
+    free(recv_buf);
+    free(send_counts);
+    free(recv_counts);
+    free(send_displs);
+    free(recv_displs);
+    free(A_counts);
+    free(A_displs);
     MPI_Finalize();
     return 0;
 }
