@@ -5,36 +5,36 @@
 #define NUM_THREADS 3
 
 int A[N] = { 15,46,48,93,39,6,72,91,14,36,69,40,89,61,97,12,21,54,53,97,84,58,32,27,33,72,20 };
+int global_samples[NUM_THREADS * NUM_THREADS];
 
-int main(int argc, char** argv)
+int main(int argc, char* argv[])
 {
     MPI_Init(&argc, &argv);
 
-    int world_size;
-    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
-
-    int world_rank;
-    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
-
-    int pstart = world_rank * N / world_size;
-    int pend = (world_rank + 1) * N / world_size;
-
+    int thread_num = NUM_THREADS;
+    int id;
+    MPI_Comm_size(MPI_COMM_WORLD, &thread_num);
+    MPI_Comm_rank(MPI_COMM_WORLD, &id);
+    // step 1. 均匀划分
+    int pstart = id * N / NUM_THREADS;
+    int pend = (id + 1) * N / NUM_THREADS;
+    // step 2. 局部排序
     std::sort(A + pstart, A + pend);
-
-    int step = N / (world_size * world_size);
-    int samples[NUM_THREADS * NUM_THREADS];
-
-    for (int j = 0; j < world_size; j++) {
-        samples[world_rank * world_size + j] = A[pstart + j * step];
+    // step 3. 选取样本
+    int step = N / (NUM_THREADS * NUM_THREADS);
+    int* samples = (int*)malloc(NUM_THREADS * sizeof(int));
+    for (int j = 0; j < NUM_THREADS; j++) {
+        samples[j] = A[pstart + j * step];
     }
-
-    int global_samples[NUM_THREADS * NUM_THREADS];
-    MPI_Allgather(samples + world_rank * world_size, world_size, MPI_INT, global_samples, world_size, MPI_INT, MPI_COMM_WORLD);
-
-    if (world_rank == 0) {
-        std::sort(global_samples, global_samples + world_size * world_size);
+    // step 4. 采样排序
+    MPI_Allgather(samples, NUM_THREADS, MPI_INT, global_samples + id * NUM_THREADS, NUM_THREADS, MPI_INT, MPI_COMM_WORLD);
+    if (id == 0) {
+        std::sort(global_samples, global_samples + NUM_THREADS * NUM_THREADS);
     }
-
+    for (int i = 0; i < NUM_THREADS * NUM_THREADS; i++) {
+        printf("%d ", global_samples[i]);
+    }
+    /*
     int pivots[NUM_THREADS - 1];
     if (world_rank == 0) {
         for (int i = 0; i < world_size - 1; i++) {
@@ -101,7 +101,7 @@ int main(int argc, char** argv)
         }
         printf("\n");
     }
-
+    */
     MPI_Finalize();
     return 0;
 }
