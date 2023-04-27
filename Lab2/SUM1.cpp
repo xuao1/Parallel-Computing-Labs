@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
         sum = sum + nextsum;
         cnt = cnt << 1;
     }
-    printf("进程 %d: 数组全和为 %d\n", id, sum);
+    printf("thread id: %d: sum: %d\n", id, sum);
     MPI_Finalize();
     return 0;
 }
