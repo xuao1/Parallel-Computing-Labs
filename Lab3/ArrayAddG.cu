@@ -33,7 +33,7 @@ int main()
     cudaMalloc(&CUDA_C, N * sizeof(int));
 
     cudaMemcpy(CUDA_A, A, N * sizeof(int), cudaMemcpyHostToDevice);
-    cudaMemcpy(CUDA_B, B, N * sizeof(int), cudaMemcpyHosttoDevice);
+    cudaMemcpy(CUDA_B, B, N * sizeof(int), cudaMemcpyHostToDevice);
 
     unsigned int timer = 0;
     CUT_SAFE_CALL(cutCreateTimer(&timer)); //定义计时器
