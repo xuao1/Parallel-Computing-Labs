@@ -43,6 +43,8 @@ int main()
     ArrayAdd<<<blocks_num, THREAD_NUM, 0>>>(CUDA_A, CUDA_B, CUDA_C, N);
 
     cudaThreadSynchronize(); //等待计算完成
+    cudaMemcpy(C, CUDA_C, sizeof(int) * N, cudaMemcpyDeviceToHost);
+
     CUT_SAFE_CALL(cutStopTimer(timer) ); //计时器停止
     float timecost=cutGetAverageTimerValue(timer); //获得计时结果
     printf("CUDA time %.4fms\n",timecost);
@@ -50,9 +52,9 @@ int main()
     cudaFree(CUDA_A);
     cudaFree(CUDA_B);
     cudaFree(CUDA_C);
-    Free(A);
-    Free(B);
-    Free(C);
+    free(A);
+    free(B);
+    free(C);
 
     return 0;
 }
