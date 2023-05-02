@@ -1,27 +1,15 @@
 #!/bin/bash
 
-./ArrayAddS
-100000
-./ArrayAddS
-200000
-./ArrayAddS
-1000000
-./ArrayAddS
-2000000
-./ArrayAddS
-10000000
-./ArrayAddS
-20000000
+echo "100000" | ./ArrayAddS
+echo "200000" | ./ArrayAddS
+echo "1000000" | ./ArrayAddS
+echo "2000000" | ./ArrayAddS
+echo "10000000" | ./ArrayAddS
+echo "20000000" | ./ArrayAddS
 
-./ArrayAddG
-100000
-./ArrayAddG
-200000
-./ArrayAddG
-1000000
-./ArrayAddG
-2000000
-./ArrayAddG
-10000000
-./ArrayAddG
-20000000
+echo "100000" | ./ArrayAddG
+echo "200000" | ./ArrayAddG
+echo "1000000" | ./ArrayAddG
+echo "2000000" | ./ArrayAddG
+echo "10000000" | ./ArrayAddG
+echo "20000000" | ./ArrayAddG
