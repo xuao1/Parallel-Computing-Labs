@@ -33,6 +33,9 @@ __global__ static void CUDAkernal (const float* a, const float* b, float* c, int
     }
 }
 
+void generateMatrix(float *a, float *b){
+    
+}
 
 int main() {
     //定义矩阵
@@ -42,13 +45,20 @@ int main() {
     a = (float*)malloc(sizeof(float)* n * n); 
     b = (float*)malloc(sizeof(float)* n * n); 
     c = (float*)malloc(sizeof(float)* n * n); 
+
+    ///生成矩阵a, b
+    generateMatrix(a, b);
+
+    cudaEvent_t start, stop;
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
+    cudaEventRecord(start, 0);
+
     float *cuda_a, *cuda_b, *cuda_c;
     //分配设备端显存 
     cudaMalloc((void**)&cuda_a, sizeof(float)* n * n);
     cudaMalloc((void**)&cuda_b, sizeof(float)* n * n);
     cudaMalloc((void**)&cuda_c, sizeof(float)* n * n);
-    ///生成矩阵a, b
-    generateMatrix(a, b);
 
     //cudaMemcpyHostToDevice - 从内存复制到显存
     //cudaMemcpyDeviceToHost - 从显存复制到内存
@@ -60,6 +70,14 @@ int main() {
 
     //cudaMemcpy 将结果从显存中复制回内存
     cudaMemcpy(c, cuda_c, sizeof(float)* n * n, cudaMemcpyDeviceToHost);
+    
+    cudaEventRecord(stop, 0);
+    cudaEventSynchronize(stop);
+
+    float timecost;
+    cudaEventElapsedTime(&timecost, start, stop);
+    printf("CUDA time %.4fms\n", timecost);
+    
     //Free
     cudaFree(cuda_a);
     cudaFree(cuda_b);
@@ -67,5 +85,6 @@ int main() {
     free(a);
     free(b);
     free(c);
+
     return 0;
 }
