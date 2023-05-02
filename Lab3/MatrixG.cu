@@ -34,10 +34,9 @@ __global__ static void CUDAkernal(const float* a, const float* b, float* c, int 
 }
 
 void generateMatrix(float *a, float *b, int n){
-    srand(time(NULL));
     for(int i = 0; i < n * n; i++) {
-        a[i] = (float)rand() / RAND_MAX;
-        b[i] = (float)rand() / RAND_MAX;
+        a[i] = (float)i / 2;
+        b[i] = (float)i / 3;
     }
 }
 
