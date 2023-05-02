@@ -27,15 +27,15 @@ int main()
         B[i] = i;
     }
 
-    int *CUDA_A, *CUDA_B, *CUDA_C;
-    cudaMalloc(&CUDA_A, N * sizeof(int));
-    cudaMalloc(&CUDA_B, N * sizeof(int));
-    cudaMalloc(&CUDA_C, N * sizeof(int));
-
     cudaEvent_t start, stop;
     cudaEventCreate(&start);
     cudaEventCreate(&stop);
     cudaEventRecord(start, 0);
+
+    int *CUDA_A, *CUDA_B, *CUDA_C;
+    cudaMalloc(&CUDA_A, N * sizeof(int));
+    cudaMalloc(&CUDA_B, N * sizeof(int));
+    cudaMalloc(&CUDA_C, N * sizeof(int));
 
     cudaMemcpy(CUDA_A, A, N * sizeof(int), cudaMemcpyHostToDevice);
     cudaMemcpy(CUDA_B, B, N * sizeof(int), cudaMemcpyHostToDevice);
