@@ -81,13 +81,6 @@ int main()
 
     //cudaMemcpy 将结果从显存中复制回内存
     cudaMemcpy(c, cuda_c, sizeof(float)* n * n, cudaMemcpyDeviceToHost);
-    
-    cudaEventRecord(stop, 0);
-    cudaEventSynchronize(stop);
-
-    float timecost;
-    cudaEventElapsedTime(&timecost, start, stop);
-    printf("CUDA time %.4fms\n", time);
 
     cudaFree(cuda_a);
     cudaFree(cuda_b);
