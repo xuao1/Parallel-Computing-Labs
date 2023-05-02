@@ -35,19 +35,20 @@ int main()
     cudaMemcpy(CUDA_A, A, N * sizeof(int), cudaMemcpyHostToDevice);
     cudaMemcpy(CUDA_B, B, N * sizeof(int), cudaMemcpyHostToDevice);
 
-    unsigned int timer = 0;
-    CUT_SAFE_CALL(cutCreateTimer(&timer)); //定义计时器
-    cudaThreadSynchronize();
-    CUT_SAFE_CALL(cutStartTimer(timer)); //计时器启动
+    cudaEvent_t start, stop;
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
+    cudaEventRecord(start, 0);
     
     ArrayAdd<<<blocks_num, THREAD_NUM, 0>>>(CUDA_A, CUDA_B, CUDA_C, N);
 
-    cudaThreadSynchronize(); //等待计算完成
+    cudaEventRecord(stop, 0);
+    cudaEventSynchronize(stop);
     cudaMemcpy(C, CUDA_C, sizeof(int) * N, cudaMemcpyDeviceToHost);
 
-    CUT_SAFE_CALL(cutStopTimer(timer) ); //计时器停止
-    float timecost=cutGetAverageTimerValue(timer); //获得计时结果
-    printf("CUDA time %.4fms\n",timecost);
+    float timecost;
+    cudaEventElapsedTime(&timecost, start, stop);
+    printf("CUDA time %.4fms\n", timecost);
     
     cudaFree(CUDA_A);
     cudaFree(CUDA_B);
