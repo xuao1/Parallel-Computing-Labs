@@ -89,12 +89,12 @@ int main()
     cudaEventElapsedTime(&timecost, start, stop);
     printf("CUDA time %.4fms\n", time);
 
-    cudaFree(CUDA_A);
-    cudaFree(CUDA_B);
-    cudaFree(CUDA_C);
-    free(A);
-    free(B);
-    free(C);
+    cudaFree(cuda_a);
+    cudaFree(cuda_b);
+    cudaFree(cuda_c);
+    free(a);
+    free(b);
+    free(c);
 
     return 0;
 }
