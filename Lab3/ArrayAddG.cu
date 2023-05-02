@@ -27,11 +27,6 @@ int main()
         B[i] = i;
     }
 
-    cudaEvent_t start, stop;
-    cudaEventCreate(&start);
-    cudaEventCreate(&stop);
-    cudaEventRecord(start, 0);
-
     int *CUDA_A, *CUDA_B, *CUDA_C;
     cudaMalloc(&CUDA_A, N * sizeof(int));
     cudaMalloc(&CUDA_B, N * sizeof(int));
@@ -39,10 +34,13 @@ int main()
 
     cudaMemcpy(CUDA_A, A, N * sizeof(int), cudaMemcpyHostToDevice);
     cudaMemcpy(CUDA_B, B, N * sizeof(int), cudaMemcpyHostToDevice);
+
+    cudaEvent_t start, stop;
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
+    cudaEventRecord(start, 0);
     
     ArrayAdd<<<blocks_num, THREAD_NUM, 0>>>(CUDA_A, CUDA_B, CUDA_C, N);
-
-    cudaMemcpy(C, CUDA_C, sizeof(int) * N, cudaMemcpyDeviceToHost);
 
     cudaEventRecord(stop, 0);
     cudaEventSynchronize(stop);
@@ -50,6 +48,8 @@ int main()
     float timecost;
     cudaEventElapsedTime(&timecost, start, stop);
     printf("CUDA time %.4fms\n", timecost);
+
+    cudaMemcpy(C, CUDA_C, sizeof(int) * N, cudaMemcpyDeviceToHost);
     
     cudaFree(CUDA_A);
     cudaFree(CUDA_B);

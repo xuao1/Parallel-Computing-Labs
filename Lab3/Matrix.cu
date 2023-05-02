@@ -11,7 +11,7 @@
 ///block个数
 int blocks_num = (MATRIX_SIZE + THREAD_NUM - 1) / THREAD_NUM;
 
-__global__ static void CUDAkernal (const float* a, const float* b, float* c, int n)
+__global__ static void CUDAkernal(const float* a, const float* b, float* c, int n)
 {
     //block内的threadID
     const int tid = threadIdx.x;
@@ -25,7 +25,7 @@ __global__ static void CUDAkernal (const float* a, const float* b, float* c, int
     if (row < n && column < n)
     {
         float t = 0;
-        for (i = 0; i < n; i++)
+        for (int i = 0; i < n; i++)
         {
             t += a[row * n + i] * b[i * n + column];
         }
@@ -33,13 +33,18 @@ __global__ static void CUDAkernal (const float* a, const float* b, float* c, int
     }
 }
 
-void generateMatrix(float *a, float *b){
-    
+void generateMatrix(float *a, float *b, int n){
+    srand(time(NULL));
+    for(int i = 0; i < n * n; i++) {
+        a[i] = (float)rand() / RAND_MAX;
+        b[i] = (float)rand() / RAND_MAX;
+    }
 }
 
-int main() {
+int main() 
+{
     //定义矩阵
-    float *a, *b, *c, *d;
+    float *a, *b, *c;
     int n = MATRIX_SIZE;
     //分配主机端内存
     a = (float*)malloc(sizeof(float)* n * n); 
@@ -47,12 +52,7 @@ int main() {
     c = (float*)malloc(sizeof(float)* n * n); 
 
     ///生成矩阵a, b
-    generateMatrix(a, b);
-
-    cudaEvent_t start, stop;
-    cudaEventCreate(&start);
-    cudaEventCreate(&stop);
-    cudaEventRecord(start, 0);
+    generateMatrix(a, b, n);
 
     float *cuda_a, *cuda_b, *cuda_c;
     //分配设备端显存 
@@ -65,8 +65,20 @@ int main() {
     cudaMemcpy(cuda_a, a, sizeof(float)* n * n, cudaMemcpyHostToDevice);
     cudaMemcpy(cuda_b, b, sizeof(float)* n * n, cudaMemcpyHostToDevice);
 
+    cudaEvent_t start, stop;
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
+    cudaEventRecord(start, 0);
+
     ///设备端函数
-    CUDAkernal << < blocks_num, THREAD_NUM, 0 >> >(cuda_a , cuda_b , cuda_c , n);
+    CUDAkernal <<< blocks_num, THREAD_NUM, 0 >>>(cuda_a , cuda_b , cuda_c , n);
+
+    cudaEventRecord(stop, 0);
+    cudaEventSynchronize(stop);
+
+    float timecost;
+    cudaEventElapsedTime(&timecost, start, stop);
+    printf("CUDA time %.4fms\n", timecost);
 
     //cudaMemcpy 将结果从显存中复制回内存
     cudaMemcpy(c, cuda_c, sizeof(float)* n * n, cudaMemcpyDeviceToHost);
@@ -76,15 +88,14 @@ int main() {
 
     float timecost;
     cudaEventElapsedTime(&timecost, start, stop);
-    printf("CUDA time %.4fms\n", timecost);
-    
-    //Free
-    cudaFree(cuda_a);
-    cudaFree(cuda_b);
-    cudaFree(cuda_c);
-    free(a);
-    free(b);
-    free(c);
+    printf("CUDA time %.4fms\n", time);
+
+    cudaFree(CUDA_A);
+    cudaFree(CUDA_B);
+    cudaFree(CUDA_C);
+    free(A);
+    free(B);
+    free(C);
 
     return 0;
 }
