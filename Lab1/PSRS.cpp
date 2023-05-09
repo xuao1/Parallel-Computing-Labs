@@ -24,8 +24,8 @@ int main()
 	printf("\n");
 	int* samples = (int*)malloc(NUM_THREADS * NUM_THREADS * sizeof(int));
 	int* pivots = (int*)malloc(NUM_THREADS * sizeof(int));
-	int* parts = (int*)malloc(NUM_THREADS * NUM_THREADS * N * sizeof(int));// 第i个线程，发往来自各个线程的有序数组
-	int* count = (int*)malloc(NUM_THREADS * NUM_THREADS * sizeof(int));// 第i个线程，发往各个线程的数据数目
+	int parts[NUM_THREADS][NUM_THREADS][N] = { 0 }; // 第i个线程，发往来自各个线程的有序数组
+	int count[NUM_THREADS][NUM_THREADS] = { 0 };// 第i个线程，发往各个线程的数据数目
 	// 以上两个数组，除去第一维，即为某个线程局部数据划分出的数组，一个存数据，一个存个数
 
 	omp_set_num_threads(NUM_THREADS);
