@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <omp.h>
 #include <algorithm>
-#define N 27
-#define NUM_THREADS 3
+#include <time.h>
 
-int A[N] = { 15,46,48,93,39,6,72,91,14,36,69,40,89,61,97,12,21,54,53,97,84,58,32,27,33,72,20 };
+int N = 27;
+int NUM_THREADS = 3;
 
 int samples[NUM_THREADS * NUM_THREADS];
 int pivots[NUM_THREADS];
@@ -14,6 +14,15 @@ int count[NUM_THREADS][NUM_THREADS]; // 第i个线程，发往各个线程的数据数目
 
 int main()
 {
+	srand(time(NULL));
+	ptintf("please input the number of numbers: \n");
+	scanf("%d", &N);
+	int* A = (int*)malloc(N * sizeof(int));
+	for (int i = 0; i < N; i++) {
+		A[i] = rand % 100;
+	}
+	ptintf("please input the number of threads: \n");
+	scanf("%d", &NUM_THREADS);
 	printf("number of threads: %d\n", NUM_THREADS);
 	printf("before sorting: \n");
 	for (int i = 0; i < N; i++)

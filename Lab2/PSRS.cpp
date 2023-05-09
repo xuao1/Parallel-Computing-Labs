@@ -1,14 +1,22 @@
 #include <stdio.h>
 #include <algorithm>
 #include <mpi.h>
-#define N 27
-#define NUM_THREADS 3
-
-int A[N] = { 15,46,48,93,39,6,72,91,14,36,69,40,89,61,97,12,21,54,53,97,84,58,32,27,33,72,20 };
-int global_samples[NUM_THREADS * NUM_THREADS];
+#include <time.h>
+int N = 27;
+int NUM_THREADS = 3;
 
 int main(int argc, char* argv[])
 {
+    srand(time(NULL));
+    ptintf("please input the number of numbers: \n");
+    scanf("%d", &N);
+    int* A = (int*)malloc(N * sizeof(int));
+    for (int i = 0; i < N; i++) {
+        A[i] = rand % 100;
+    }
+    ptintf("please input the number of threads: \n");
+    scanf("%d", &NUM_THREADS);
+    int* global_samples = (int*)malloc(NUM_THREADS * NUM_THREADS * sizeof(int));
     MPI_Init(&argc, &argv);
     int thread_num = NUM_THREADS;
     int id;

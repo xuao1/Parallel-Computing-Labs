@@ -1,11 +1,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <mpi.h>
-#define N 8
-#define NUM_THREADS 8
-int A[8] = { 0,1,2,3,4,5,6,7 };
+#include <time.h>
+int N = 8;
+int NUM_THREADS = 8;
 
 int main(int argc, char** argv) {
+    srand(time(NULL));
+    ptintf("please input the number of numbers: \n");
+    scanf("%d", &N);
+    int* A = (int*)malloc(N * sizeof(int));
+    for (int i = 0; i < N; i++) {
+        A[i] = rand % 100;
+    }
+    printf("Array: \n");
+    for (int i = 0; i < N; i++)
+        printf("%d ", A[i]);
+    printf("\n");
+    ptintf("please input the number of threads: \n");
+    scanf("%d", &NUM_THREADS);
     int id, thread_num;
     thread_num = NUM_THREADS;
     // int * recv_buf, sum = 0;
