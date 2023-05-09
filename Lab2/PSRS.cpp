@@ -16,7 +16,6 @@ int main(int argc, char* argv[])
     }
     printf("please input the number of threads: \n");
     scanf("%d", &NUM_THREADS);
-    int* global_samples = (int*)malloc(NUM_THREADS * NUM_THREADS * sizeof(int));
     MPI_Init(&argc, &argv);
     int thread_num = NUM_THREADS;
     int id;
