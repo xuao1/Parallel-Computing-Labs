@@ -7,7 +7,7 @@ int NUM_THREADS = 8;
 
 int main(int argc, char** argv) {
     srand(time(NULL));
-    ptintf("please input the number of numbers: \n");
+    printf("please input the number of numbers: \n");
     scanf("%d", &N);
     int* A = (int*)malloc(N * sizeof(int));
     for (int i = 0; i < N; i++) {
@@ -17,7 +17,7 @@ int main(int argc, char** argv) {
     for (int i = 0; i < N; i++)
         printf("%d ", A[i]);
     printf("\n");
-    ptintf("please input the number of threads: \n");
+    printf("please input the number of threads: \n");
     scanf("%d", &NUM_THREADS);
     int id, thread_num;
     thread_num = NUM_THREADS;

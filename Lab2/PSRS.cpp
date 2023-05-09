@@ -8,13 +8,13 @@ int NUM_THREADS = 3;
 int main(int argc, char* argv[])
 {
     srand(time(NULL));
-    ptintf("please input the number of numbers: \n");
+    printf("please input the number of numbers: \n");
     scanf("%d", &N);
     int* A = (int*)malloc(N * sizeof(int));
     for (int i = 0; i < N; i++) {
         A[i] = rand() % 100;
     }
-    ptintf("please input the number of threads: \n");
+    printf("please input the number of threads: \n");
     scanf("%d", &NUM_THREADS);
     int* global_samples = (int*)malloc(NUM_THREADS * NUM_THREADS * sizeof(int));
     MPI_Init(&argc, &argv);
