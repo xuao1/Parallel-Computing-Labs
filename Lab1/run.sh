@@ -30,7 +30,7 @@ echo -e "${YELLOW}Pi_4 output:${RESET}"
 cat Pi_4.out
 
 echo -e "${GREEN}Running PSRS${RESET}"
-./PSRS > PSRS.out
+echo "27 3" | ./PSRS > PSRS.out
 echo -e "${YELLOW}PSRS output:${RESET}"
 cat PSRS.out
 
