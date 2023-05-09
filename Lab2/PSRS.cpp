@@ -8,16 +8,12 @@ int NUM_THREADS = 3;
 int main(int argc, char* argv[])
 {
     srand(time(NULL));
-    printf("please input the number of numbers: \n");
-    scanf("%d", &N);
     int* A = (int*)malloc(N * sizeof(int));
     for (int i = 0; i < N; i++) {
         A[i] = rand() % 100;
     }
-    printf("please input the number of threads: \n");
-    scanf("%d", &NUM_THREADS);
     MPI_Init(&argc, &argv);
-    int thread_num = NUM_THREADS;
+    int thread_num;
     int id;
     MPI_Comm_size(MPI_COMM_WORLD, &thread_num);
     MPI_Comm_rank(MPI_COMM_WORLD, &id);
