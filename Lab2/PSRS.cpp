@@ -16,6 +16,7 @@ int main(int argc, char* argv[])
     int thread_num;
     int id;
     MPI_Comm_size(MPI_COMM_WORLD, &thread_num);
+    int NUM_THREADS = thread_num;
     MPI_Comm_rank(MPI_COMM_WORLD, &id);
     // step 1. ¾ùÔÈ»®·Ö
     int pstart = id * N / NUM_THREADS;
