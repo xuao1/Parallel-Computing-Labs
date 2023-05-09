@@ -12,7 +12,7 @@ int main(int argc, char* argv[])
     scanf("%d", &N);
     int* A = (int*)malloc(N * sizeof(int));
     for (int i = 0; i < N; i++) {
-        A[i] = rand % 100;
+        A[i] = rand() % 100;
     }
     ptintf("please input the number of threads: \n");
     scanf("%d", &NUM_THREADS);
