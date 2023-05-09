@@ -2,22 +2,24 @@
 #include <algorithm>
 #include <mpi.h>
 #include <time.h>
+
+int A[1000];
 int N = 27;
 int NUM_THREADS = 3;
 
 int main(int argc, char* argv[])
 {
     srand(time(NULL));
-    int* A = (int*)malloc(N * sizeof(int));
-    for (int i = 0; i < N; i++) {
-        A[i] = rand() % 100;
-    }
     MPI_Init(&argc, &argv);
     int thread_num;
     int id;
     MPI_Comm_size(MPI_COMM_WORLD, &thread_num);
     int NUM_THREADS = thread_num;
     MPI_Comm_rank(MPI_COMM_WORLD, &id);
+    if (id == 0) {
+        for (int i = 0; i < N; i++)
+            A[i] = rand() % 100;
+    }    
     // step 1. ¾ùÔÈ»®·Ö
     int pstart = id * N / NUM_THREADS;
     int pend = (id + 1) * N / NUM_THREADS;

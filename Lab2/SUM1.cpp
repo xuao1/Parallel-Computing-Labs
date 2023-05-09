@@ -2,29 +2,28 @@
 #include <stdlib.h>
 #include <mpi.h>
 #include <time.h>
+
+int A[1000];
 int N = 8;
 int NUM_THREADS = 8;
 
 int main(int argc, char** argv) {
-    srand(time(NULL));
-    printf("please input the number of numbers: \n");
-    scanf("%d", &N);
-    int* A = (int*)malloc(N * sizeof(int));
-    for (int i = 0; i < N; i++) {
-        A[i] = rand() % 100;
-    }
-    printf("Array: \n");
-    for (int i = 0; i < N; i++)
-        printf("%d ", A[i]);
-    printf("\n");
-    printf("please input the number of threads: \n");
-    scanf("%d", &NUM_THREADS);
     int id, thread_num;
     thread_num = NUM_THREADS;
     // int * recv_buf, sum = 0;
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &thread_num);
     MPI_Comm_rank(MPI_COMM_WORLD, &id);
+    N = NUM_THREADS = thread_num;
+    srand(time(NULL));
+    if (id == 0) {
+        for (int i = 0; i < N; i++)
+            A[i] = rand() % 100;
+        printf("Array: \n");
+        for (int i = 0; i < N; i++)
+            printf("%d ", A[i]);
+        printf("\n");
+    }
     int sum = A[id], nextsum = 0;
     int cnt = 1; // ¿ç²½
     int chatwith;
