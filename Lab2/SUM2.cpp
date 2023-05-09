@@ -3,7 +3,6 @@
 #include <mpi.h>
 #include <time.h>
 
-int A[1000];
 int N = 8;
 int NUM_THREADS = 8;
 
@@ -14,6 +13,7 @@ int main(int argc, char** argv) {
     MPI_Comm_rank(MPI_COMM_WORLD, &id);
     N = NUM_THREADS = thread_num;
     srand(time(NULL));
+    int* A = (int*)malloc(N * sizeof(int));
     if (id == 0) {
         for (int i = 0; i < N; i++)
             A[i] = rand() % 100;
@@ -22,6 +22,7 @@ int main(int argc, char** argv) {
             printf("%d ", A[i]);
         printf("\n");
     }
+    MPI_Bcast(A, N, MPI_INT, 0, MPI_COMM_WORLD);
     int sum = A[id], nextsum = 0;
     int cnt = 1;
     int flag = 0;
