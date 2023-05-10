@@ -23,7 +23,18 @@ int main()
 		printf("%d ", A[i]);
 	printf("\n");
 
+	int* As = (int*)malloc(N * sizeof(int));
+	for(int i = 0; i < N; i++){
+		As[i] = A[i];
+	}
+	printf("sequential sorting: \n");
 	double start_time, end_time;
+	start_time = omp_get_wtime();
+	std::sort(As, As + N);
+	end_time = omp_get_wtime();
+	printf("Time: %f seconds\n", end_time - start_time);
+
+	printf("parallel sorting: \n");
 	start_time = omp_get_wtime();
 
 	int* samples = (int*)malloc(NUM_THREADS * NUM_THREADS * sizeof(int));
