@@ -28,13 +28,12 @@ int main()
 	for(int i = 0; i < N; i++){
 		As[i] = A[i];
 	}
-	/*
+
 	printf("sequential sorting: \n");
 	start_time = omp_get_wtime();
 	std::sort(As, As + N);
 	end_time = omp_get_wtime();
 	printf("Time: %f seconds\n", end_time - start_time);
-	*/
 
 	printf("parallel sorting: \n");
 	start_time = omp_get_wtime();
