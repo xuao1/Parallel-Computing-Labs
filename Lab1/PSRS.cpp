@@ -22,6 +22,10 @@ int main()
 	for (int i = 0; i < N; i++)
 		printf("%d ", A[i]);
 	printf("\n");
+
+	double start_time, end_time;
+	start_time = omp_get_wtime();
+
 	int* samples = (int*)malloc(NUM_THREADS * NUM_THREADS * sizeof(int));
 	int* pivots = (int*)malloc(NUM_THREADS * sizeof(int));
 	int parts[NUM_THREADS][NUM_THREADS][N] = { 0 }; // 第i个线程，发往来自各个线程的有序数组
@@ -110,6 +114,10 @@ int main()
 			A[k++] = result[i][j];
 		}
 	}
+
+	end_time = omp_get_wtime();
+	printf("Time: %f seconds\n", end_time - start_time);
+
 	printf("after sorting: \n");
 	for (int i = 0; i < N; i++)
 		printf("%d ", A[i]);
