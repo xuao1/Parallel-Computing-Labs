@@ -1,12 +1,12 @@
 #!/bin/bash
 
-timeout 1m  echo "input0.txt" | ./Lab1
-timeout 1m echo "input1.txt" | ./Lab1
-timeout 1m echo "input2.txt" | ./Lab1
-timeout 1m echo "input3.txt" | ./Lab1
-timeout 1m echo "input4.txt" | ./Lab1
-timeout 1m echo "input5.txt" | ./Lab1
-timeout 1m echo "input6.txt" | ./Lab1
-timeout 1m echo "input7.txt" | ./Lab1
-timeout 1m echo "input8.txt" | ./Lab1
-timeout 1m echo "input9.txt" | ./Lab1
+echo "input0.txt" | timeout 3m ./Lab1
+echo "input1.txt" | timeout 3m ./Lab1
+echo "input2.txt" | timeout 3m ./Lab1
+echo "input3.txt" | timeout 3m ./Lab1
+echo "input4.txt" | timeout 3m ./Lab1
+echo "input5.txt" | timeout 3m ./Lab1
+echo "input6.txt" | timeout 3m ./Lab1
+echo "input7.txt" | timeout 3m ./Lab1
+echo "input8.txt" | timeout 3m ./Lab1
+echo "input9.txt" | timeout 3m ./Lab1
