@@ -9,7 +9,6 @@
 
 using namespace std;
 using namespace chrono;
-steady_clock::time_point start;
 
 
 int N, D, S; // N 个阿姨，D 个值班天数，每日轮班次数 S
@@ -76,7 +75,7 @@ int main()
 		cerr << "Unable to open input file\n";
 		exit(1);
 	}
-	start = high_resolution_clock::now();
+	auto start = high_resolution_clock::now();
 	string line;
 	getline(input_file, line);
 	istringstream iss1(line);
