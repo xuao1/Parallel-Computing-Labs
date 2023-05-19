@@ -19,6 +19,11 @@ int ans = -1;
 int ans_shifts[2400];
 int base;
 int Top;
+int resum[2400];
+bool HaveRequests[2400];
+int HavaRequestcnt;
+int TotalRequestcnt;
+int begin_index;
 
 void Update(int cnt) {
 	if (cnt <= ans) return;
@@ -32,20 +37,51 @@ void Update(int cnt) {
 		ans_shifts[i] = shifts[i];
 }
 
-void Search(int num, int pre, int cnt) {
+void Search0(int index, int num, int pre, int cnt) {
+	if (cnt + resum[num] <= ans) return;
+	if (num == D * S) {
+		if (cnt <= ans) return;
+		else {
+			begin_index = index;
+			ans = cnt;
+			return;
+		}
+	}
+	if (num == 0) {
+		for (int i = 0; i < N; i++) {
+			if (counts[i] >= Top) continue;
+			counts[i]++;
+			if (request[num][i] == 1) Search0(i, num + 1, i, cnt + 1);
+			else Search0(i, num + 1, i, cnt);
+			counts[i]--;
+		}
+	}
+	else {
+		int i = (pre + 1) % N;
+		counts[i]++;
+		if (request[num][i] == 1) Search0(index, num + 1, i, cnt + 1);
+		else Search0(index, num + 1, i, cnt);
+		counts[i]--;
+	}
+}
+
+void Search1(int num, int pre, int cnt) {
+	if (cnt + resum[num] <= ans) return;
 	if (num == D * S) {
 		Update(cnt);
 		return;
 	}
 	if (num == 0) {
-		for (int i = 0; i < N; i++) {
+		int i = begin_index;
+		do {
 			if (counts[i] >= Top) continue;
-			shifts[num] = i;
 			counts[i]++;
-			if (request[num][i] == 1) Search(num + 1, i, cnt + 1);
-			else Search(num + 1, i, cnt);
+			shifts[num] = i;
+			if (request[num][i] == 1) Search1(num + 1, i, cnt + 1);
+			else Search1(num + 1, i, cnt);
 			counts[i]--;
-		}
+			i = (i + 1) % N;
+		} while (i != begin_index);
 	}
 	else {
 		int i = (pre + 1) % N;
@@ -57,8 +93,8 @@ void Search(int num, int pre, int cnt) {
 			}
 			shifts[num] = i;
 			counts[i]++;
-			if (request[num][i] == 1) Search(num + 1, i, cnt + 1);
-			else Search(num + 1, i, cnt);
+			if (request[num][i] == 1) Search1(num + 1, i, cnt + 1);
+			else Search1(num + 1, i, cnt);
 			counts[i]--;
 			i = (i + 1) % N;
 		}
@@ -88,7 +124,6 @@ int main()
 	cout << N << " " << D << " " << S << endl;
 	base = D * S / N;
 	Top = base + D * S - base * N;
-
 	for (int i = 0; i < N; i++)
 		for (int j = 0; j < D; j++) {
 			getline(input_file, line);
@@ -97,14 +132,27 @@ int main()
 				getline(iss2, line, ',');
 				if (stoi(line) == 1) {
 					request[j * S + k][i] = 1;
+					HaveRequests[j * S + k] = 1;
+					TotalRequestcnt++;
 				}
 
 			}
 		}
+	for (int i = D * S - 1; i >= 0; i--) {
+		resum[i] = resum[i + 1];
+		if (HaveRequests[i]) {
+			HavaRequestcnt++;
+			resum[i]++;
+		}
+	}
 
 	input_file.close();
+	cout << HavaRequestcnt << " " << TotalRequestcnt << endl;
 
-	Search(0, -1, 0);
+	// ans = HavaRequestcnt - 1;
+	Search0(0, -1, 0, -1);
+
+	Search1(0, -1, 0);
 
 	cout << "ans = " << ans << endl;
 	for (int j = 0; j < D; j++) {
