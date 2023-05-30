@@ -2,12 +2,12 @@
 #include <algorithm>
 #include <mpi.h>
 #include <time.h>
-int N = 30000;
+int N = 300000;
 int NUM_THREADS = 3;
 
 int main(int argc, char* argv[])
 {
-    cin>>N;
+    // scanf("%d", &N);
     srand(time(NULL));
     MPI_Init(&argc, &argv);
     int thread_num;
@@ -16,15 +16,18 @@ int main(int argc, char* argv[])
     int NUM_THREADS = thread_num;
     MPI_Comm_rank(MPI_COMM_WORLD, &id);
     int* A = (int*)malloc(N * sizeof(int));
+    int* AS = (int*)malloc(N * sizeof(int));
     if (id == 0) {
-        for (int i = 0; i < N; i++)
+        for (int i = 0; i < N; i++){
             A[i] = rand() % 10000;
+	    AS[i] = A[i];
+	}
     }  
     double start, end;
     // 比较串行时间
     if (id == 0) {
         start = MPI_Wtime();
-        std::sort(A, A + N);
+        std::sort(AS, AS + N);
         end = MPI_Wtime();
         printf("Serial Time: %lf\n", end - start);
     }
@@ -152,12 +155,12 @@ int main(int argc, char* argv[])
         end = MPI_Wtime();
         printf("Time: %lf\n", end - start);
     }
-    if (id == 0) {
-        for (int i = 0; i < N; i++) {
-            printf("%d ", A[i]);
-        }
-        printf("\n");
-    }
+    //if (id == 0) {
+    //    for (int i = 0; i < N; i++) {
+    //        printf("%d ", A[i]);
+    //    }
+    //    printf("\n");
+    //}
     free(samples);
     free(global_samples);
     free(pivots);
