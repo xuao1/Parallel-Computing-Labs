@@ -2,11 +2,12 @@
 #include <algorithm>
 #include <mpi.h>
 #include <time.h>
-int N = 27;
+int N = 30000;
 int NUM_THREADS = 3;
 
 int main(int argc, char* argv[])
 {
+    cin>>N;
     srand(time(NULL));
     MPI_Init(&argc, &argv);
     int thread_num;
@@ -17,35 +18,45 @@ int main(int argc, char* argv[])
     int* A = (int*)malloc(N * sizeof(int));
     if (id == 0) {
         for (int i = 0; i < N; i++)
-            A[i] = rand() % 100;
+            A[i] = rand() % 10000;
     }  
+    double start, end;
+    // æ¯”è¾ƒä¸²è¡Œæ—¶é—´
+    if (id == 0) {
+        start = MPI_Wtime();
+        std::sort(A, A + N);
+        end = MPI_Wtime();
+        printf("Serial Time: %lf\n", end - start);
+    }
+    // ç»Ÿè®¡æ—¶é—´
+    if (id == 0) start = MPI_Wtime();
     MPI_Bcast(A, N, MPI_INT, 0, MPI_COMM_WORLD);
-    // step 1. ¾ùÔÈ»®·Ö
+    // step 1. ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½
     int pstart = id * N / NUM_THREADS;
     int pend = (id + 1) * N / NUM_THREADS;
-    // step 2. ¾Ö²¿ÅÅÐò
+    // step 2. ï¿½Ö²ï¿½ï¿½ï¿½ï¿½ï¿½
     std::sort(A + pstart, A + pend);
-    // step 3. Ñ¡È¡Ñù±¾
+    // step 3. Ñ¡È¡ï¿½ï¿½ï¿½ï¿½
     int step = N / (NUM_THREADS * NUM_THREADS);
     int* samples = (int*)malloc(NUM_THREADS * sizeof(int));
     for (int j = 0; j < NUM_THREADS; j++) {
         samples[j] = A[pstart + j * step];
     }
-    // È«¾Ö samples Ö»ÐèÒªÏß³Ì 0 »ñÈ¡¼´¿É£¬Ëü´ÓÕâÐ©Êý¾ÝÖÐÑ¡ÔñÖ÷Ôª
-    // ÔÙ½«Ö÷Ôª¹ã²¥µ½¸÷¸öÏß³Ì
+    // È«ï¿½ï¿½ samples Ö»ï¿½ï¿½Òªï¿½ß³ï¿½ 0 ï¿½ï¿½È¡ï¿½ï¿½ï¿½É£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½Ôª
+    // ï¿½Ù½ï¿½ï¿½ï¿½Ôªï¿½ã²¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß³ï¿½
     int* global_samples = (int*)malloc(NUM_THREADS * NUM_THREADS * sizeof(int));
     int* pivots = (int*)malloc(NUM_THREADS * sizeof(int));
     MPI_Gather(samples, NUM_THREADS, MPI_INT, global_samples, NUM_THREADS, MPI_INT, 0, MPI_COMM_WORLD);
     if (id == 0) {
-        // step 4. ²ÉÑùÅÅÐò
+        // step 4. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         std::sort(global_samples, global_samples + NUM_THREADS * NUM_THREADS);
-        // step 5. Ñ¡ÔñÖ÷Ôª
+        // step 5. Ñ¡ï¿½ï¿½ï¿½ï¿½Ôª
         for (int i = 0; i < NUM_THREADS - 1; i++) {
             pivots[i] = global_samples[(i + 1) * NUM_THREADS];
         }
     }
     MPI_Bcast(pivots, NUM_THREADS - 1, MPI_INT, 0, MPI_COMM_WORLD);
-    // step 6. Ö÷Ôª»®·Ö
+    // step 6. ï¿½ï¿½Ôªï¿½ï¿½ï¿½ï¿½
     int index = 0;
     int j = pstart;
     int local_parts[NUM_THREADS][N] = { 0 };
@@ -53,19 +64,19 @@ int main(int argc, char* argv[])
     while (j < pend && index < NUM_THREADS - 1) {
         if (A[j] <= pivots[index]) {
             local_parts[index][local_count[index]] = A[j];
-            local_count[index]++; // <= pivot[index] µÄÓÐ count[index] ¸ö
+            local_count[index]++; // <= pivot[index] ï¿½ï¿½ï¿½ï¿½ count[index] ï¿½ï¿½
             j++;
         }
         else index++;
     }
-    // ´óÓÚ×îºóÒ»¸öÖ÷ÔªµÄ²¿·Ö£º´ËÊ± index = NUM_THREADS - 1
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ôªï¿½Ä²ï¿½ï¿½Ö£ï¿½ï¿½ï¿½Ê± index = NUM_THREADS - 1
     while (j < pend) {
         local_parts[index][local_count[index]] = A[j];
         local_count[index]++;
         j++;
     }
-    // step 7. È«¾Ö½»»»
-    // Ã¿¸öÏß³Ì p_id ÐèÒª´¦Àí NUM_THREADS ¸ö local_parts[id][] 
+    // step 7. È«ï¿½Ö½ï¿½ï¿½ï¿½
+    // Ã¿ï¿½ï¿½ï¿½ß³ï¿½ p_id ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ NUM_THREADS ï¿½ï¿½ local_parts[id][] 
     int* send_buf = (int*)malloc(N * NUM_THREADS * sizeof(int));
     int* recv_buf = (int*)malloc(N * NUM_THREADS * sizeof(int));
     int* send_counts = (int*)malloc(NUM_THREADS * sizeof(int));
@@ -95,15 +106,15 @@ int main(int argc, char* argv[])
     //std::sort(recv_buf, recv_buf + N * NUM_THREADS);
     //std::sort(recv_buf, recv_buf + recv_displs[NUM_THREADS - 1] + recv_counts[NUM_THREADS - 1]); 
 
-    // ÖÁ´Ë£¬Íê³ÉÈ«¾Ö½»»»
-    // Ã¿¸öÏß³ÌÓÐÒ»¸öÒ»Î¬Êý×é recv_buf,°´ recv_couts ·Ö¶ÎÓÐÐò£¨±¾ÖÊÉÏÊÇÒòÎªÀ´Ô´ÓÚÈ«¾Ö½»»»£©
-    // step 8. ¹é²¢ÅÅÐò
-    // ½« recv_buf ·Ö¶Î merge£¬×îÖÕÐ´Èëµ½ A Êý×é
+    // ï¿½ï¿½ï¿½Ë£ï¿½ï¿½ï¿½ï¿½È«ï¿½Ö½ï¿½ï¿½ï¿½
+    // Ã¿ï¿½ï¿½ï¿½ß³ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ò»Î¬ï¿½ï¿½ï¿½ï¿½ recv_buf,ï¿½ï¿½ recv_couts ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½ò£¨±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½Ô´ï¿½ï¿½È«ï¿½Ö½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // step 8. ï¿½é²¢ï¿½ï¿½ï¿½ï¿½
+    // ï¿½ï¿½ recv_buf ï¿½Ö¶ï¿½ mergeï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ëµ½ A ï¿½ï¿½ï¿½ï¿½
     int result[N] = { 0 };
     int tmp[N] = { 0 };
     int result_count = 0, tmp_count = 0;
     for (int index = 0; index < NUM_THREADS; index++) {
-        // Merge: result[] ºÍ parts[index][id][]
+        // Merge: result[] ï¿½ï¿½ parts[index][id][]
         int i = 0, jj = 0, k = 0;
         int A_count = result_count;
         int B_count = recv_counts[index];
@@ -125,7 +136,7 @@ int main(int argc, char* argv[])
             result[l] = tmp[l];
         }
     }
-    // ÕâÀï³ö¹ýÒ»¸ö BUG£¬²î²»¶àµ÷ÁË 1.5 Ð¡Ê±£¬½á¹û·¢ÏÖÊÇÉÏÃæµÄ¸ÃÐ´Îª index µÄµØ·½Ð´ÎªÁË i
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ BUGï¿½ï¿½ï¿½î²»ï¿½ï¿½ï¿½ï¿½ï¿½ 1.5 Ð¡Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½Ð´Îª index ï¿½ÄµØ·ï¿½Ð´Îªï¿½ï¿½ i
     int* A_counts = (int*)malloc(NUM_THREADS * sizeof(int));
     int* A_displs = (int*)malloc(NUM_THREADS * sizeof(int));
     MPI_Gather(&result_count, 1, MPI_INT, A_counts, 1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -136,6 +147,11 @@ int main(int argc, char* argv[])
         }
     }
     MPI_Gatherv(result, result_count, MPI_INT, A, A_counts, A_displs, MPI_INT, 0, MPI_COMM_WORLD);
+    // ç»Ÿè®¡æ—¶é—´ 
+    if (id == 0) {
+        end = MPI_Wtime();
+        printf("Time: %lf\n", end - start);
+    }
     if (id == 0) {
         for (int i = 0; i < N; i++) {
             printf("%d ", A[i]);
