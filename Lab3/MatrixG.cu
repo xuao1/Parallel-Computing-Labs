@@ -7,7 +7,7 @@
 //单个block大小
 #define THREAD_NUM 256
 ///矩阵大小
-#define MATRIX_SIZE 100
+#define MATRIX_SIZE 128
 ///block个数
 int blocks_num = (MATRIX_SIZE * MATRIX_SIZE + THREAD_NUM - 1) / THREAD_NUM;
 
@@ -46,15 +46,9 @@ __global__ static void CUDAkernal(const float* a, const float* b, float* c, int 
     }
 }
 
-void generateMatrix(float *a, float *b, int n){
-    for(int i = 0; i < n * n; i++) {
-        a[i] = (float)i / 2;
-        b[i] = (float)i / 3;
-    }
-}
-
 int main() 
 {
+    srand(time(NULL));
     //定义矩阵
     float *a, *b, *c;
     int n = MATRIX_SIZE;
@@ -97,6 +91,7 @@ int main()
     cudaEventRecord(stop, 0);
     cudaEventSynchronize(stop);
 
+    /*
     gemm_baseline(a, b, v_c);
 
     int flag = 1;
@@ -110,6 +105,8 @@ int main()
 	if(flag)  printf("Results are correct.\n");
 	else printf("Results are wrong.\n");
 
+    */
+
     float timecost;
     cudaEventElapsedTime(&timecost, start, stop);
     printf("CUDA time %.4fms\n", timecost);
@@ -120,6 +117,7 @@ int main()
     free(a);
     free(b);
     free(c);
+    free(v_c);
 
     return 0;
 }

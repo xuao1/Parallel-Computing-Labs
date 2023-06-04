@@ -2,14 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define MATRIX_SIZE 1000
-
-void generateMatrix(float *a, float *b, int n){
-    for(int i = 0; i < n * n; i++) {
-        a[i] = (float)i / 2;
-        b[i] = (float)i / 3;
-    }
-}
+#define MATRIX_SIZE 128
 
 void matrixMultiply(const float* a, const float* b, float* c, int n) {
     for (int row = 0; row < n; row++) {
@@ -25,13 +18,19 @@ void matrixMultiply(const float* a, const float* b, float* c, int n) {
 
 int main() 
 {
+    srand(time(NULL));
     float *a, *b, *c;
     int n = MATRIX_SIZE;
     a = (float*)malloc(sizeof(float) * n * n);
     b = (float*)malloc(sizeof(float) * n * n);
     c = (float*)malloc(sizeof(float) * n * n);
 
-    generateMatrix(a, b, n);
+    ///生成矩阵a, b
+    for (int i = 0; i < n * n; i++) {
+        a[i] = (float)rand() / (float)(RAND_MAX);
+        b[i] = (float)rand() / (float)(RAND_MAX);
+        c[i] = 0.0;
+    }
 
     clock_t start, end;
     start = clock();
