@@ -7,7 +7,7 @@
 //单个block大小
 #define THREAD_NUM 256
 ///矩阵大小
-#define MATRIX_SIZE 512
+#define MATRIX_SIZE 1024
 ///block个数
 int blocks_num = (MATRIX_SIZE * MATRIX_SIZE + THREAD_NUM - 1) / THREAD_NUM;
 
