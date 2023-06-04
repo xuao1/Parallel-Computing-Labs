@@ -11,6 +11,18 @@
 ///block个数
 int blocks_num = (MATRIX_SIZE + THREAD_NUM - 1) / THREAD_NUM;
 
+void gemm_baseline(float* A, float* B, float* C) {
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            float sum = 0.0;
+            for (int k = 0; k < N; k++) {
+                sum += A[i * N + k] * B[k * N + j];
+            }
+            C[i * N + j] = sum;
+        }
+    }
+}
+
 __global__ static void CUDAkernal(const float* a, const float* b, float* c, int n)
 {
     //block内的threadID
@@ -77,6 +89,21 @@ int main()
 
     cudaEventRecord(stop, 0);
     cudaEventSynchronize(stop);
+
+    int *v_c = (float*)malloc(sizeof(float)* n * n); 
+    gemm_baseline(a, b, v_c);
+
+    int flag = 1;
+    for(int i = 0; i < N * N; i++) {
+        // printf("%f %f\n", h_c[i], v_c[i]);
+        if(abs(c[i] - v_c[i]) > 0.1){
+            flag = 0;
+            break;
+        }
+    }
+
+	if(flag)  printf("Results are correct.\n");
+	else printf("Results are wrong.\n");
 
     float timecost;
     cudaEventElapsedTime(&timecost, start, stop);
