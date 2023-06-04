@@ -9,7 +9,7 @@
 ///矩阵大小
 #define MATRIX_SIZE 100
 ///block个数
-int blocks_num = (MATRIX_SIZE + THREAD_NUM - 1) / THREAD_NUM;
+int blocks_num = (MATRIX_SIZE * MATRIX_SIZE + THREAD_NUM - 1) / THREAD_NUM;
 
 void gemm_baseline(float* A, float* B, float* C) {
     for (int i = 0; i < MATRIX_SIZE; i++) {
