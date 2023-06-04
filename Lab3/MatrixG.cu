@@ -31,7 +31,7 @@ __global__ static void CUDAkernal(const float* a, const float* b, float* c, int 
     const int bid = blockIdx.x;
     //全局threadID
     const int idx = bid * THREAD_NUM + tid;
-    printf("%d ", idx);
+    // printf("%d ", idx);
     const int row = idx / n;
     const int column = idx % n;
     //计算矩阵乘法
