@@ -100,10 +100,9 @@ int main()
 
     int flag = 1;
     for(int i = 0; i < n * n; i++) {
-        printf("%f %f\n", c[i], v_c[i]);
+        printf("%d %f %f\n", i, c[i], v_c[i]);
         if(abs(c[i] - v_c[i]) > 0.1){
             flag = 0;
-            break;
         }
     }
 
