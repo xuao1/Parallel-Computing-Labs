@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define MATRIX_SIZE 256
+#define MATRIX_SIZE 512
 
 void matrixMultiply(const float* a, const float* b, float* c, int n) {
     for (int row = 0; row < n; row++) {
