@@ -12,13 +12,13 @@
 int blocks_num = (MATRIX_SIZE + THREAD_NUM - 1) / THREAD_NUM;
 
 void gemm_baseline(float* A, float* B, float* C) {
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
+    for (int i = 0; i < MATRIX_SIZE; i++) {
+        for (int j = 0; j < MATRIX_SIZE; j++) {
             float sum = 0.0;
-            for (int k = 0; k < N; k++) {
-                sum += A[i * N + k] * B[k * N + j];
+            for (int k = 0; k < MATRIX_SIZE; k++) {
+                sum += A[i * MATRIX_SIZE + k] * B[k * MATRIX_SIZE + j];
             }
-            C[i * N + j] = sum;
+            C[i * MATRIX_SIZE + j] = sum;
         }
     }
 }
@@ -61,9 +61,15 @@ int main()
     a = (float*)malloc(sizeof(float)* n * n); 
     b = (float*)malloc(sizeof(float)* n * n); 
     c = (float*)malloc(sizeof(float)* n * n); 
+    float *v_c = (float*)malloc(sizeof(float)* n * n); 
 
     ///生成矩阵a, b
-    generateMatrix(a, b, n);
+    for (int i = 0; i < n * n; i++) {
+        a[i] = (float)rand() / (float)(RAND_MAX);
+        b[i] = (float)rand() / (float)(RAND_MAX);
+        c[i] = 0.0;
+        v_c[i] = 0.0;
+    }
 
     cudaEvent_t start, stop;
     cudaEventCreate(&start);
@@ -90,7 +96,6 @@ int main()
     cudaEventRecord(stop, 0);
     cudaEventSynchronize(stop);
 
-    int *v_c = (float*)malloc(sizeof(float)* n * n); 
     gemm_baseline(a, b, v_c);
 
     int flag = 1;
