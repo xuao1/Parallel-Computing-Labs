@@ -99,7 +99,7 @@ int main()
     gemm_baseline(a, b, v_c);
 
     int flag = 1;
-    for(int i = 0; i < N * N; i++) {
+    for(int i = 0; i < n * n; i++) {
         // printf("%f %f\n", h_c[i], v_c[i]);
         if(abs(c[i] - v_c[i]) > 0.1){
             flag = 0;
